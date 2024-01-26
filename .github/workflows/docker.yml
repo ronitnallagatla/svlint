@@ -1,0 +1,11 @@
+name: Docker Build and Run
+
+on: [push, pull_request]
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Docker Build
+        run:  docker build -t svlint:1.0 .
