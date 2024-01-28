@@ -1,9 +1,9 @@
 FROM rust
 
-RUN mkdir svlint
+RUN mkdir /home/app
 
-COPY . /svlint
+COPY . /home/app
 
-RUN cd svlint
+RUN cd /home/app/ && ls
 
 CMD ["make"]
