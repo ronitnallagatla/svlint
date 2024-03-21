@@ -1,0 +1,2 @@
+module identifier_matches_filename;
+endfunction
