@@ -34,6 +34,7 @@ impl SyntaxRule for IdentifierMatchesFilename {
                                 if let Some(file_name) = path.file_name().and_then(std::ffi::OsStr::to_str) {
                                     if file_name.ends_with(".sv") {
                                         let file_ident = file_name.trim_end_matches(".sv");
+
                                         if module_name == file_ident {
                                             found_matching_file = true;
                                             break; // We found a match, no need to continue checking other files
