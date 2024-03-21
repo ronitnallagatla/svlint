@@ -2032,6 +2032,37 @@ The most relevant clauses of IEEE1800-2017 are:
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+## Syntax Rule: `identifier_matches_filename`
+
+### Hint
+
+Ensure that the module name matches the file name.
+
+### Reason
+
+The module name does not match the file name.
+
+### Pass Example (1 of 1)
+```systemverilog
+module identifier_matches_filename;
+endmodule
+```
+
+### Fail Example (1 of 1)
+```systemverilog
+module Bar;
+endmodule
+```
+
+### Explanation
+
+Module Identifier should have the same name as the file it's in.
+
+```module Bar``` should be in ```some/path/to/Bar.sv```
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 ## Syntax Rule: `inout_with_tri`
 
 ### Hint
