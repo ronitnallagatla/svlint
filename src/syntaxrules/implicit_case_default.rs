@@ -7,6 +7,7 @@ pub struct ImplicitCaseDefault {
     under_always_construct: bool,
     under_case_item: bool,
     has_default: bool,
+    case_default_vars: Vec<String>,
     lhs_variables: Vec<String>,
 }
 
@@ -40,6 +41,7 @@ impl SyntaxRule for ImplicitCaseDefault {
                         self.under_always_construct = false;
                         self.has_default = false;
                         self.lhs_variables.clear();
+                        self.case_default_vars.clear();
                     }
 
                     RefNode::CaseItemNondefault(_) => {
@@ -61,7 +63,7 @@ impl SyntaxRule for ImplicitCaseDefault {
             self.lhs_variables.push(id);
         }
 
-        // check if default
+        // check if has default
         if let (true, RefNode::CaseStatementNormal(x)) = (self.under_always_construct, node) {
             let a = unwrap_node!(*x, CaseItemDefault);
             if a.is_some() {
@@ -69,26 +71,46 @@ impl SyntaxRule for ImplicitCaseDefault {
             }
         }
 
+        // if has default, collect all explicit default vars
+        if let (true, true, RefNode::CaseItemDefault(x)) =
+            (self.under_always_construct, self.has_default, node)
+        {
+            let var = unwrap_node!(*x, VariableLvalueIdentifier);
+            if var.is_some() {
+                let id = get_identifier(var.unwrap(), syntax_tree);
+                self.case_default_vars.push(id);
+            }
+        }
+
         // match case statement declarations
-        match (self.under_always_construct, self.under_case_item, node) {
-            (true, true, RefNode::BlockingAssignment(x)) => {
+        match (
+            self.under_always_construct,
+            self.under_case_item,
+            !self.has_default || !self.case_default_vars.is_empty(),
+            node,
+        ) {
+            (true, true, true, RefNode::BlockingAssignment(x)) => {
                 let var = unwrap_node!(*x, VariableLvalueIdentifier).unwrap();
                 let loc = unwrap_locate!(var.clone()).unwrap();
                 let id = get_identifier(var, syntax_tree);
 
-                if self.lhs_variables.contains(&id.to_string()) || self.has_default {
+                if self.lhs_variables.contains(&id.to_string())
+                    || self.case_default_vars.contains(&id.to_string())
+                {
                     return SyntaxRuleResult::Pass;
                 } else {
                     return SyntaxRuleResult::FailLocate(*loc);
                 }
             }
 
-            (true, true, RefNode::BlockItemDeclaration(x)) => {
+            (true, true, true, RefNode::BlockItemDeclaration(x)) => {
                 let var = unwrap_node!(*x, VariableDeclAssignment).unwrap();
                 let loc = unwrap_locate!(var.clone()).unwrap();
                 let id = get_identifier(var, syntax_tree);
 
-                if self.lhs_variables.contains(&id.to_string()) || self.has_default {
+                if self.lhs_variables.contains(&id.to_string())
+                    || self.case_default_vars.contains(&id.to_string())
+                {
                     return SyntaxRuleResult::Pass;
                 } else {
                     return SyntaxRuleResult::FailLocate(*loc);
