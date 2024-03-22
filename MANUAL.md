@@ -2114,7 +2114,7 @@ module M;
 endmodule
 ```
 
-### Fail Example (1 of 3)
+### Fail Example (1 of 4)
 ```systemverilog
 module M;
   always_comb
@@ -2124,7 +2124,7 @@ module M;
 endmodule
 ```
 
-### Fail Example (2 of 3)
+### Fail Example (2 of 4)
 ```systemverilog
 module M;
   always_comb begin
@@ -2140,13 +2140,27 @@ module M;
 endmodule
 ```
 
-### Fail Example (3 of 3)
+### Fail Example (3 of 4)
 ```systemverilog
 module M;
   always_comb begin
     a = 0;
     case (x)
       1: b = 0;
+    endcase
+  end
+endmodule
+```
+
+### Fail Example (4 of 4)
+```systemverilog
+module M;
+  always_comb begin
+    q = 0;
+    case (x)
+      1: p = 1;
+      2: q = 1;
+      default: q = 1;
     endcase
   end
 endmodule
