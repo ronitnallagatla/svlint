@@ -2036,7 +2036,7 @@ The most relevant clauses of IEEE1800-2017 are:
 
 ### Hint
 
-Ensure that the module name matches the file name.
+Ensure that the module name matches the file name. module Bar should be in some/path/to/Bar.sv
 
 ### Reason
 
@@ -3669,6 +3669,37 @@ The most relevant clauses of IEEE1364-2001 are:
 The most relevant clauses of IEEE1800-2017 are:
 - 23.2 Module definitions
 
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+## Syntax Rule: `module_identifier_matches_filename`
+
+### Hint
+
+Ensure that the module name matches the file name. module Bar should be in some/path/to/Bar.sv
+
+### Reason
+
+The module name does not match the file name.
+
+### Pass Example (1 of 1)
+```systemverilog
+module syntaxrules_module_identifier_matches_filename_pass_1of1;
+endmodule
+```
+
+### Fail Example (1 of 1)
+```systemverilog
+module Bar;
+endmodule
+```
+
+### Explanation
+
+Module Identifier should have the same name as the file it's in.
+
+```module Bar``` should be in ```some/path/to/Bar.sv```
 
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
