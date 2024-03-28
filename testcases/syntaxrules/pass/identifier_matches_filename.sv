@@ -1,2 +1,2 @@
-module identifier_matches_filename;
+module syntaxrules_identifier_matches_filename_pass_1of1;
 endmodule
