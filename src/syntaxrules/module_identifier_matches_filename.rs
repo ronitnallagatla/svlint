@@ -22,7 +22,7 @@ impl SyntaxRule for ModuleIdentifierMatchesFilename {
             RefNode::ModuleDeclaration(x) => {
                 
                 let path = if let Some(x) = unwrap_locate!(node.clone()) {
-                    if let Some((path, _beg)) = syntax_tree.get_origin(&x) {
+                    if let Some((path, _)) = syntax_tree.get_origin(&x) {
                         Some(path)
                     } else {
                         None

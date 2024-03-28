@@ -18,56 +18,45 @@ impl SyntaxRule for InterfaceIdentifierMatchesFilename {
             }
         };
 
-        
-
         match node {
             RefNode::InterfaceIdentifier(x) => {
-                              
-                let path = if let Some(x) = unwrap_locate!(node.clone()) {
-                    if let Some((path, _beg)) = syntax_tree.get_origin(&x) {
-                        Some(path)
+                let path_str = if let Some(x) = unwrap_locate!(node.clone()) {
+                    if let Some((path, _)) = syntax_tree.get_origin(&x) {
+                        path
                     } else {
-                        None
+                        return SyntaxRuleResult::Fail;
                     }
                 } else {
                     return SyntaxRuleResult::Fail;
                 };
-
-
-                if path.is_none() { 
-                    return SyntaxRuleResult::Fail; 
-                }
-
-                
+        
                 let id: Option<&Locate> = match unwrap_node!(*x, SimpleIdentifier) {
                     Some(RefNode::SimpleIdentifier(id_)) => {
                         unwrap_locate!(id_)
-                    }
+                    },
                     _ => None,
                 };
-                
+        
                 if id.is_none() {
                     return SyntaxRuleResult::Fail;
                 }
-                
-                let interface_name = syntax_tree.get_str(id.unwrap()).unwrap();
-                let path_str = path.unwrap();
-
-                let path = std::path::Path::new(path_str);
         
-                        
+                let interface_name = syntax_tree.get_str(id.unwrap()).unwrap();
+        
+                let path = std::path::Path::new(path_str);
                 if let Some(file_name) = path.file_name().and_then(std::ffi::OsStr::to_str) {
                     if file_name.ends_with(".sv") {
+                        // Trim the ".sv" extension to compare the base file name with the interface name.
                         let file_ident = file_name.trim_end_matches(".sv");
                         if interface_name == file_ident {
                             return SyntaxRuleResult::Pass;
                         }
                     }
                 }
-                
+        
                 SyntaxRuleResult::Fail      
-                
-            }
+            },
+
             _ => SyntaxRuleResult::Pass,
         }
         
