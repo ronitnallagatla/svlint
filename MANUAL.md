@@ -2044,7 +2044,7 @@ The module name does not match the file name.
 
 ### Pass Example (1 of 1)
 ```systemverilog
-module identifier_matches_filename;
+module syntaxrules_identifier_matches_filename_pass_1of1;
 endmodule
 ```
 
