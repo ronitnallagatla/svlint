@@ -46,12 +46,10 @@ impl SyntaxRule for IdentifierMatchesFilename {
                             if file_name.ends_with(".sv") {
                                 let file_ident = file_name.trim_end_matches(".sv");
                                 if module_name == file_ident {
-                                    println!("Passing: {} == {}", module_name, file_ident);
                                     return SyntaxRuleResult::Pass;
                                 }
                             }
                         }
-                        println!("Failing: {} != {:?}", module_name, path_str);
                         return SyntaxRuleResult::Fail;
                     }
                     _ => unreachable!(),
@@ -68,7 +66,7 @@ impl SyntaxRule for IdentifierMatchesFilename {
     }
 
     fn hint(&self, _option: &ConfigOption) -> String {
-        String::from("Ensure that the module name matches the file name.")
+        String::from("Ensure that the module name matches the file name. module Bar should be in some/path/to/Bar.sv")
     }
 
     fn reason(&self) -> String {
