@@ -20,46 +20,36 @@ impl SyntaxRule for ModuleIdentifierMatchesFilename {
 
         match node {
             RefNode::ModuleDeclaration(x) => {
-                
-                let path = if let Some(x) = unwrap_locate!(node.clone()) {
+                let path_str = if let Some(x) = unwrap_locate!(node.clone()) {
                     if let Some((path, _)) = syntax_tree.get_origin(&x) {
-                        Some(path)
+                        path
                     } else {
-                        None
+                        return SyntaxRuleResult::Fail;
                     }
                 } else {
                     return SyntaxRuleResult::Fail;
                 };
         
-                if path.is_none() { 
-                    return SyntaxRuleResult::Fail; 
-                }
+                let module_name = if let Some(RefNode::ModuleIdentifier(module_ident)) = unwrap_node!(*x, ModuleIdentifier) {
+                    syntax_tree.get_str(module_ident).unwrap()
+                } else {
+                    return SyntaxRuleResult::Fail;
+                };
         
-                let a = unwrap_node!(*x, ModuleIdentifier).unwrap();
-
-                match a {
-                    RefNode::ModuleIdentifier(module_ident) => {
-                        let module_name = syntax_tree.get_str(module_ident).unwrap();
-                        let path_str = path.unwrap();
-                        let path = std::path::Path::new(path_str);
-                        
-                        if let Some(file_name) = path.file_name().and_then(std::ffi::OsStr::to_str) {
-                            if file_name.ends_with(".sv") {
-                                let file_ident = file_name.trim_end_matches(".sv");
-                                if module_name == file_ident {
-                                    return SyntaxRuleResult::Pass;
-                                }
-                            }
+                // Use the extracted path_str and module_name to perform the file name check
+                let path = std::path::Path::new(&path_str);
+                if let Some(file_name) = path.file_name().and_then(std::ffi::OsStr::to_str) {
+                    if file_name.ends_with(".sv") {
+                        let file_ident = file_name.trim_end_matches(".sv");
+                        if file_ident == module_name {
+                            return SyntaxRuleResult::Pass;
                         }
-
-                        return SyntaxRuleResult::Fail;
                     }
-                    _ => unreachable!(),
                 }
-                
+                SyntaxRuleResult::Fail
             }
             _ => SyntaxRuleResult::Pass,
-        }
+        }   
         
     }
 
