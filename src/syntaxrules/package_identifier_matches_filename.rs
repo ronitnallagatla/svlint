@@ -3,8 +3,8 @@ use crate::linter::{SyntaxRule, SyntaxRuleResult};
 use sv_parser::{unwrap_locate, NodeEvent, RefNode, SyntaxTree, unwrap_node, Locate};
 
 #[derive(Default)]
-pub struct InterfaceIdentifierMatchesFilename;
-impl SyntaxRule for InterfaceIdentifierMatchesFilename {
+pub struct PackageIdentifierMatchesFilename;
+impl SyntaxRule for PackageIdentifierMatchesFilename {
     fn check(
         &mut self,
         syntax_tree: &SyntaxTree,
@@ -19,7 +19,7 @@ impl SyntaxRule for InterfaceIdentifierMatchesFilename {
         };
 
         match node {
-            RefNode::InterfaceIdentifier(x) => {
+            RefNode::PackageIdentifier(x) => {
                 let path_str = if let Some(x) = unwrap_locate!(node.clone()) {
                     if let Some((path, _)) = syntax_tree.get_origin(&x) {
                         path
@@ -41,18 +41,18 @@ impl SyntaxRule for InterfaceIdentifierMatchesFilename {
                     return SyntaxRuleResult::Fail;
                 }
         
-                let interface_name = syntax_tree.get_str(id.unwrap()).unwrap();
+                let package_name = syntax_tree.get_str(id.unwrap()).unwrap();
         
                 let path = std::path::Path::new(path_str);
                 if let Some(file_name) = path.file_name().and_then(std::ffi::OsStr::to_str) {
                     if file_name.ends_with(".sv") {
                         let file_ident = file_name.trim_end_matches(".sv");
-                        if interface_name == file_ident {
+                        if package_name == file_ident {
                             return SyntaxRuleResult::Pass;
                         }
                     }
                 }
-        
+                 
                 SyntaxRuleResult::Fail      
             },
 
@@ -62,15 +62,15 @@ impl SyntaxRule for InterfaceIdentifierMatchesFilename {
     }
 
     fn name(&self) -> String {
-        String::from("interface_identifier_matches_filename")
+        String::from("package_identifier_matches_filename")
     }
 
     fn hint(&self, _option: &ConfigOption) -> String {
-        String::from("Ensure that the interface name matches the file name. Interface Bar should be in some/path/to/Bar.sv")
+        String::from("Ensure that the package name name matches the file name. Package fooBar should be in some/path/to/fooBar.sv")
     }
 
     fn reason(&self) -> String {
-        String::from("The interface name does not match the file name.")
+        String::from("The package name does not match the file name.")
     }
 
 }
