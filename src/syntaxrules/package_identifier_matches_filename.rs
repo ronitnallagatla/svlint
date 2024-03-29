@@ -70,7 +70,7 @@ impl SyntaxRule for PackageIdentifierMatchesFilename {
     }
 
     fn reason(&self) -> String {
-        String::from("The package name does not match the file name.")
+        String::from("Encourages consistent file naming standards for packages and assists in searching for packages.")
     }
 
 }

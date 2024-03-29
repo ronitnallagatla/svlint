@@ -72,6 +72,6 @@ impl SyntaxRule for ModuleIdentifierMatchesFilename {
     }
 
     fn reason(&self) -> String {
-        String::from("The module name does not match the file name.")
+        String::from("Encourages consistent file naming standards for packages and assists in searching for modules.")
     }
 }

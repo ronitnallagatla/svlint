@@ -70,7 +70,7 @@ impl SyntaxRule for InterfaceIdentifierMatchesFilename {
     }
 
     fn reason(&self) -> String {
-        String::from("The interface name does not match the file name.")
+        String::from("Encourages consistent file naming standards for packages and assists in searching for interfaces.")
     }
 
 }
