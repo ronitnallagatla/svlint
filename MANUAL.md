@@ -2189,7 +2189,7 @@ Ensure that the interface name matches the file name. Interface Bar should be in
 
 ### Reason
 
-The interface name does not match the file name.
+Encourages consistent file naming standards for packages and assists in searching for interfaces.
 
 ### Pass Example (1 of 1)
 ```systemverilog
@@ -3681,7 +3681,7 @@ Ensure that the module name matches the file name. module Bar should be in some/
 
 ### Reason
 
-The module name does not match the file name.
+Encourages consistent file naming standards for packages and assists in searching for modules.
 
 ### Pass Example (1 of 1)
 ```systemverilog
@@ -4501,7 +4501,7 @@ Ensure that the package name name matches the file name. Package fooBar should b
 
 ### Reason
 
-The package name does not match the file name.
+Encourages consistent file naming standards for packages and assists in searching for packages.
 
 ### Pass Example (1 of 1)
 ```systemverilog
