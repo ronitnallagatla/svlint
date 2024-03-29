@@ -5006,6 +5006,37 @@ The most relevant clauses of IEEE1800-2017 are:
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
+## Syntax Rule: `program_identifier_matches_filename`
+
+### Hint
+
+Ensure that the program name matches the file name. program Bar should be in some/path/to/Bar.sv
+
+### Reason
+
+Encourages consistent file naming standards for packages and assists in searching for programs.
+
+### Pass Example (1 of 1)
+```systemverilog
+program syntaxrules_program_identifier_matches_filename_pass_1of1;
+endprogram
+```
+
+### Fail Example (1 of 1)
+```systemverilog
+program Bar;
+endprogram
+```
+
+### Explanation
+
+Program Identifier should have the same name as the file it's in.
+
+```program Bar``` should be in ```some/path/to/Bar.sv```
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
 ## Syntax Rule: `sequential_block_in_always_comb`
 
 ### Hint
