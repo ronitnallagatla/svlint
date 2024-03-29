@@ -2181,7 +2181,7 @@ The most relevant clauses of IEEE1800-2017 are:
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-## Syntax Rule: `module_identifier_matches_filename`
+## Syntax Rule: `interface_identifier_matches_filename`
 
 ### Hint
 
@@ -2193,21 +2193,21 @@ The interface name does not match the file name.
 
 ### Pass Example (1 of 1)
 ```systemverilog
-module syntaxrules_module_identifier_matches_filename_pass_1of1;
-endmodule
+interface syntaxrules_interface_identifier_matches_filename_pass_1of1;
+endinterface
 ```
 
 ### Fail Example (1 of 1)
 ```systemverilog
-module Bar;
-endmodule
+interface Bar;
+endinterface
 ```
 
 ### Explanation
 
-Module Identifier should have the same name as the file it's in.
+Interface Identifier should have the same name as the file it's in.
 
-```module Bar``` should be in ```some/path/to/Bar.sv```
+```interface Bar``` should be in ```some/path/to/Bar.sv```
 
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -4489,6 +4489,38 @@ The most relevant clauses of IEEE1800-2017 are:
 - 22.8 default nettype
 - 23.2.2 Port declarations
 
+
+
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+
+## Syntax Rule: `package_identifier_matches_filename`
+
+### Hint
+
+Ensure that the package name name matches the file name. Package fooBar should be in some/path/to/fooBar.sv
+
+### Reason
+
+The package name does not match the file name.
+
+### Pass Example (1 of 1)
+```systemverilog
+package syntaxrules_package_identifier_matches_filename_pass_1of1;
+endpackage
+
+```
+
+### Fail Example (1 of 1)
+```systemverilog
+package fooBar;
+endpackage
+```
+
+### Explanation
+
+Package Identifier should have the same name as the file it's in.
+
+```package Bar``` should be in ```some/path/to/Bar.sv```
 
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
