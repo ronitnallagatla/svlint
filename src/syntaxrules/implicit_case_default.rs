@@ -1,14 +1,21 @@
+use std::collections::{HashMap, HashSet};
+
 use crate::config::ConfigOption;
 use crate::linter::{SyntaxRule, SyntaxRuleResult};
-use sv_parser::{unwrap_locate, unwrap_node, NodeEvent, RefNode, SyntaxTree};
+use sv_parser::{unwrap_locate, unwrap_node, Locate, NodeEvent, RefNode, SyntaxTree};
 
 #[derive(Default)]
 pub struct ImplicitCaseDefault {
     under_always_construct: bool,
     under_case_item: bool,
+    under_case_default: bool,
     has_default: bool,
     case_default_vars: Vec<String>,
     lhs_variables: Vec<String>,
+
+    locate_vars: HashMap<String, Locate>,
+    lhs_default_vars : HashSet<String>,
+    case_item_vars : HashSet<String>,
 }
 
 impl SyntaxRule for ImplicitCaseDefault {
@@ -18,6 +25,7 @@ impl SyntaxRule for ImplicitCaseDefault {
         event: &NodeEvent,
         _option: &ConfigOption,
     ) -> SyntaxRuleResult {
+        //println!("{}", syntax_tree);
         let node = match event {
             NodeEvent::Enter(x) => {
                 match x {
@@ -28,6 +36,10 @@ impl SyntaxRule for ImplicitCaseDefault {
 
                     RefNode::CaseItemNondefault(_) => {
                         self.under_case_item = true;
+                    }
+
+                    RefNode::CaseItemDefault(_) => {
+                        self.under_case_default = true;
                     }
 
                     _ => (),
@@ -48,6 +60,10 @@ impl SyntaxRule for ImplicitCaseDefault {
                         self.under_case_item = false;
                     }
 
+                    RefNode::CaseItemDefault(_) => {
+                        self.under_case_default = false;
+                    }
+
                     _ => (),
                 }
                 return SyntaxRuleResult::Pass;
@@ -63,6 +79,7 @@ impl SyntaxRule for ImplicitCaseDefault {
             self.lhs_variables.push(id);
         }
 
+        
         // check if has default
         if let (true, RefNode::CaseStatementNormal(x)) = (self.under_always_construct, node) {
             let a = unwrap_node!(*x, CaseItemDefault);
@@ -71,15 +88,40 @@ impl SyntaxRule for ImplicitCaseDefault {
             }
         }
 
-        // if has default, collect all explicit default vars
+        /* 
         if let (true, true, RefNode::CaseItemDefault(x)) =
-            (self.under_always_construct, self.has_default, node)
+            (self.under_always_construct, self.under_case_default, node)
         {
             let var = unwrap_node!(*x, VariableLvalueIdentifier);
             if var.is_some() {
                 let id = get_identifier(var.unwrap(), syntax_tree);
                 self.case_default_vars.push(id);
             }
+        }
+        */
+
+        // if has default, collect all explicit default vars
+        match (self.under_always_construct, self.under_case_default, node) 
+        {
+            (true, true, RefNode::BlockingAssignment(x)) => {
+                let var = unwrap_node!(*x, VariableLvalueIdentifier);
+                if var.is_some() {
+                    let id = get_identifier(var.unwrap(), syntax_tree);
+                    self.case_default_vars.push(id);
+                }
+                //println!("{:?}", self.case_default_vars);
+            }
+
+            (true, true, RefNode::BlockItemDeclaration(x)) => {
+                let var = unwrap_node!(*x, VariableDeclAssignment);
+                if var.is_some() {
+                    let id = get_identifier(var.unwrap(), syntax_tree);
+                    self.case_default_vars.push(id);
+                }
+                //println!("{:?}", self.case_default_vars);
+            }
+
+            _ => ()
         }
 
         // match case statement declarations
