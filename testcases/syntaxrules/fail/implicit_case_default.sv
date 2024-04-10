@@ -26,3 +26,14 @@ module M;
     endcase
   end
 endmodule
+////////////////////////////////////////////////////////////////////////////////
+module M;
+  always_comb begin
+    q = 0;
+    case (x)
+      1: p = 1;
+      2: q = 1;
+      default: q = 1;
+    endcase
+  end
+endmodule
