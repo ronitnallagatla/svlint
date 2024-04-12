@@ -1,20 +1,14 @@
-use std::collections::{HashMap, HashSet};
 use crate::config::ConfigOption;
 use crate::linter::{SyntaxRule, SyntaxRuleResult};
-use sv_parser::{unwrap_locate, unwrap_node, Locate, NodeEvent, RefNode, SyntaxTree};
+use sv_parser::{unwrap_locate, unwrap_node, NodeEvent, RefNode, SyntaxTree};
 
 #[derive(Default)]
 pub struct ImplicitCaseDefault {
     under_always_construct: bool,
     under_case_item: bool,
-    under_case_default: bool,
     has_default: bool,
     case_default_vars: Vec<String>,
     lhs_variables: Vec<String>,
-
-    locate_vars: HashMap<String, Locate>,
-    lhs_default_vars : HashSet<String>,
-    case_item_vars : HashSet<String>,
 }
 
 impl SyntaxRule for ImplicitCaseDefault {
@@ -36,10 +30,6 @@ impl SyntaxRule for ImplicitCaseDefault {
                         self.under_case_item = true;
                     }
 
-                    RefNode::CaseItemDefault(_) => {
-                        self.under_case_default = true;
-                    }
-
                     _ => (),
                 }
                 x
@@ -48,21 +38,6 @@ impl SyntaxRule for ImplicitCaseDefault {
             NodeEvent::Leave(x) => {
                 match x {
                     RefNode::AlwaysConstruct(_) => {
-                        println!("{:?}", self.lhs_default_vars);
-                        println!("{:?}", self.case_item_vars);
-                        println!("{:?}", self.locate_vars);
-                        println!("{}", self.case_item_vars.is_subset(&self.lhs_default_vars));
-                        println!("{:?}", self.case_item_vars.difference(&self.lhs_default_vars));
-                        for var in self.case_item_vars.difference(&self.lhs_default_vars) {
-                            //println!("{:?}", self.locate_vars.get(var).unwrap());
-                            let loc = self.locate_vars.get(var).unwrap();
-                        }
-                        println!("----------------\n");
-
-                        self.lhs_default_vars.clear();
-                        self.case_item_vars.clear();
-                        self.locate_vars.clear();
-
                         self.under_always_construct = false;
                         self.has_default = false;
                         self.lhs_variables.clear();
@@ -73,48 +48,35 @@ impl SyntaxRule for ImplicitCaseDefault {
                         self.under_case_item = false;
                     }
 
-                    RefNode::CaseItemDefault(_) => {
-                        self.under_case_default = false;
-                    }
-
                     _ => (),
                 }
                 return SyntaxRuleResult::Pass;
             }
         };
 
-        // if has implicit vars, collect all implicit declarations
+        // match implicit declarations
         if let (true, false, RefNode::BlockItemDeclaration(x)) =
             (self.under_always_construct, self.under_case_item, node)
         {
             let var = unwrap_node!(*x, VariableDeclAssignment).unwrap();
             let id = get_identifier(var, syntax_tree);
-            self.lhs_default_vars.insert(id);
+            self.lhs_variables.push(id);
         }
 
-        // if has default case, collect all explicit default vars
-        match (self.under_always_construct, self.under_case_default, node) 
-        {
-            (true, true, RefNode::BlockingAssignment(x)) => {
-                let var = unwrap_node!(*x, VariableLvalueIdentifier);
+        // check if has default, and collect explicit default var
+        if let (true, RefNode::CaseStatementNormal(x)) = (self.under_always_construct, node) {
+            let a = unwrap_node!(*x, CaseItemDefault);
+            if a.is_some() {
+                self.has_default = true;
+                let var = unwrap_node!(a.unwrap(), VariableLvalueIdentifier);
                 if var.is_some() {
                     let id = get_identifier(var.unwrap(), syntax_tree);
-                    self.lhs_default_vars.insert(id.clone());
+                    self.case_default_vars.push(id);
                 }
             }
-
-            (true, true, RefNode::BlockItemDeclaration(x)) => {
-                let var = unwrap_node!(*x, VariableDeclAssignment);
-                if var.is_some() {
-                    let id = get_identifier(var.unwrap(), syntax_tree);
-                    self.lhs_default_vars.insert(id.clone());
-                }
-            }
-
-            _ => ()
         }
 
-        // if a case item, collect all variable declarations
+        // match case statement declarations
         match (
             self.under_always_construct,
             self.under_case_item,
@@ -125,16 +87,28 @@ impl SyntaxRule for ImplicitCaseDefault {
                 let var = unwrap_node!(*x, VariableLvalueIdentifier).unwrap();
                 let loc = unwrap_locate!(var.clone()).unwrap();
                 let id = get_identifier(var, syntax_tree);
-                self.locate_vars.insert(id.clone(), *loc);
-                self.case_item_vars.insert(id);
+
+                if self.lhs_variables.contains(&id.to_string())
+                    || self.case_default_vars.contains(&id.to_string())
+                {
+                    return SyntaxRuleResult::Pass;
+                } else {
+                    return SyntaxRuleResult::FailLocate(*loc);
+                }
             }
 
             (true, true, true, RefNode::BlockItemDeclaration(x)) => {
                 let var = unwrap_node!(*x, VariableDeclAssignment).unwrap();
                 let loc = unwrap_locate!(var.clone()).unwrap();
                 let id = get_identifier(var, syntax_tree);
-                self.locate_vars.insert(id.clone(), *loc);
-                self.case_item_vars.insert(id);
+
+                if self.lhs_variables.contains(&id.to_string())
+                    || self.case_default_vars.contains(&id.to_string())
+                {
+                    return SyntaxRuleResult::Pass;
+                } else {
+                    return SyntaxRuleResult::FailLocate(*loc);
+                }
             }
 
             _ => (),
