@@ -9,10 +9,17 @@ style_textwidth = false
 
 [syntaxrules]
 
-module_identifier_matches_filename = true
-package_identifier_matches_filename = true
-program_identifier_matches_filename = true
-interface_identifier_matches_filename = true
+
+#module_identifier_matches_filename = true
+
+#package_identifier_matches_filename = true
+
+#program_identifier_matches_filename = true
+
+#interface_identifier_matches_filename = true
+
+unpacked_array = true
+implicit_case_default = true
 
 
 action_block_with_side_effect = false
