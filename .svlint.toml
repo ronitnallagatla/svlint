@@ -1,0 +1,77 @@
+[option]
+exclude_paths = ["work/", "fpga/", "mapped/", "scripts/"]
+
+[textrules]
+header_copyright = false
+style_directives = false
+style_semicolon = false
+style_textwidth = false
+
+[syntaxrules]
+
+module_identifier_matches_filename = true
+package_identifier_matches_filename = true
+program_identifier_matches_filename = true
+interface_identifier_matches_filename = true
+
+
+action_block_with_side_effect = false
+blocking_assignment_in_always_ff = true
+blocking_assignment_in_always_latch = true
+case_default = true
+default_nettype_none = false
+enum_with_type = true
+eventlist_comma_always_ff = false
+eventlist_or = false
+explicit_case_default = false
+explicit_if_else = false
+function_same_as_system_function = true
+function_with_automatic = true
+generate_case_with_label = false
+generate_for_with_label = false
+generate_if_with_label = false
+genvar_declaration_in_loop = false
+genvar_declaration_out_loop = false
+inout_with_tri = false
+input_with_var = false
+interface_port_with_modport = true
+keyword_forbidden_always = false
+keyword_forbidden_generate = false
+keyword_forbidden_priority = false
+keyword_forbidden_unique = false
+keyword_forbidden_unique0 = false
+keyword_forbidden_wire_reg = true
+keyword_required_generate = false
+general_always_no_edge = true
+localparam_explicit_type = false
+localparam_type_twostate = false
+loop_statement_in_always_comb = true
+loop_statement_in_always_ff = true
+loop_statement_in_always_latch = true
+loop_variable_declaration = true
+lowercamelcase_interface = false
+lowercamelcase_module = false
+lowercamelcase_package = false
+multiline_for_begin = true
+multiline_if_begin = true
+module_nonansi_forbidden = true
+non_blocking_assignment_in_always_comb = true
+operator_case_equality = true
+output_with_var = false
+parameter_default_value = false
+parameter_explicit_type = false
+parameter_in_generate = true
+parameter_in_package = false
+parameter_type_twostate = false
+prefix_inout = false
+prefix_input = false
+prefix_instance = false
+prefix_interface = false
+prefix_module = false
+prefix_output = false
+prefix_package = false
+sequential_block_in_always_comb = false
+sequential_block_in_always_ff = false
+sequential_block_in_always_latch = false
+style_commaleading = false
+style_indent = false
