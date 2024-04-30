@@ -2179,7 +2179,31 @@ always_comb begin
 end
 
 ```
-If the case match fails, `y` wouldn't infer memory or be undriven because the default value is defined before the `case`.
+If the case match fails, `y` wouldn't infer memory or be undriven because the default value is defined before the `case`. Let's consider another example, 
+
+```sv
+always_comb begin
+  case (x)
+    1: y = 1;
+    default: y = 0;
+  endcase
+end
+
+```
+`y` wouldn't infer memory or be undriven here because it has been defined in `default`. However, the following will cause the rule to return fail,
+
+```sv
+always_comb begin
+  case (x)
+    1: y = 1;
+    default: x = 0;
+  endcase
+end
+
+```
+`y` has not been implicitly defined before the `case` nor explicitly defined in `default`.
+
+This rule is a more lenient version of case_default. It adapts to a specific coding style of setting default values to signals at the top of a procedural block to ensure that signals have a default value regardless of the logic in the procedural block. As such, this rule will only consider values set unconditionally at the top of the procedural block as a default and will disregard assignments made in conditional blocks like if/else, etc. Additionally, this rule will only recognize the first variable defined in the `default` case. If this coding style is not preferred, it is strongly suggested to use the rules mentioned below as they offer stricter guarantees.
 
 See also:
  - **case_default**
