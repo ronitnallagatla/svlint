@@ -111,6 +111,7 @@ release_win:
 	rm -rf tmp/
 
 release_mac:
+	rustup target add x86_64-apple-darwin
 	cargo build --release --target=x86_64-apple-darwin
 	rm -rf tmp
 	mkdir -p tmp/bin/ tmp/doc/
