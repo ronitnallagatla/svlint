@@ -63,22 +63,16 @@ impl SyntaxRule for ImplicitCaseDefault {
             self.lhs_variables.push(id);
         }
 
-        // check if has default
+        // check if has default, and collect explicit default var
         if let (true, RefNode::CaseStatementNormal(x)) = (self.under_always_construct, node) {
             let a = unwrap_node!(*x, CaseItemDefault);
             if a.is_some() {
                 self.has_default = true;
-            }
-        }
-
-        // if has default, collect all explicit default vars
-        if let (true, true, RefNode::CaseItemDefault(x)) =
-            (self.under_always_construct, self.has_default, node)
-        {
-            let var = unwrap_node!(*x, VariableLvalueIdentifier);
-            if var.is_some() {
-                let id = get_identifier(var.unwrap(), syntax_tree);
-                self.case_default_vars.push(id);
+                let var = unwrap_node!(a.unwrap(), VariableLvalueIdentifier);
+                if var.is_some() {
+                    let id = get_identifier(var.unwrap(), syntax_tree);
+                    self.case_default_vars.push(id);
+                }
             }
         }
 
