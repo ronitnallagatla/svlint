@@ -148,3 +148,4 @@ under the Developer Certificate of Origin <https://developercertificate.org/>.
 - Sosuke Hosokawa (@so298)
 - Jan Remes (@remes-codasip)
 - Ronit Nallagatla (@ronitnallagatla)
+- Shantanu Sinha (@ShantanuPSinha)
