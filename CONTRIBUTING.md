@@ -7,7 +7,6 @@ We welcome your contributions in whatever form.
 This contributing document contains some suggestions that may make
 contributions flow more efficiently.
 
-
 Did you find a bug?
 -------------------
 
@@ -19,7 +18,6 @@ Did you find a bug?
   [Issue](https://github.com/dalance/svlint/issues).
 - Be sure to include a **code sample** demonstrating the bug and expected
   behavior that is not occurring.
-
 
 Did you write a patch that fixes a bug?
 ---------------------------------------
@@ -47,7 +45,6 @@ Did you write a patch that fixes a bug?
   On your first contribution, please add your name to the list of contributors
   at the end of this file.
 
-
 Adding A New Rule
 -----------------
 
@@ -70,11 +67,13 @@ Adding A New Rule
   [`testcases/syntaxrules/fail/generate_case_with_label.sv`](https://github.com/dalance/svlint/blob/master/testcases/syntaxrules/fail/generate_case_with_label.sv).
 5. Implement the rule in `src/rules/$RULENAME.rs`.
   This includes writing a short hint and reason to be displayed to the user.
-  - Both the hint and reason should be as short as possible (maximum 80
+
+- Both the hint and reason should be as short as possible (maximum 80
     characters), to display nicely in text editors which use
     [svls](https://github.com/dalance/svls).
-  - Hint should be a command telling the user *what to do* to pass the rule.
-  - Reason should be a 1-sentence summary of *why the rule exists*.
+- Hint should be a command telling the user *what to do* to pass the rule.
+- Reason should be a 1-sentence summary of *why the rule exists*.
+
 6. Test the implementation using `cargo test`.
   You should see all tests passing as "ok".
 7. Update any relevant rulesets by editing `md/ruleset-*.md`.
@@ -86,7 +85,6 @@ Adding A New Rule
 10. Open a [Pull Request](https://github.com/dalance/svlint/pulls) by comparing
   your branch to dalance's master branch
   (`https://github.com/dalance/svlint/compare/master...$USERNAME:svlint:$BRANCHNAME`).
-
 
 Related Projects
 ----------------
@@ -130,7 +128,6 @@ Svlint is also depended upon by several (downstream) projects:
   [environment modules](https://modules.readthedocs.io/en/latest/index.html).
   Mostly useful for professional SystemVerilog developers.
 
-
 Contributors
 ------------
 
@@ -147,4 +144,6 @@ under the Developer Certificate of Origin <https://developercertificate.org/>.
 - Taichi Ishitani (@taichi-ishitani)
 - Sosuke Hosokawa (@so298)
 - Jan Remes (@remes-codasip)
+- Shantanu Sinha (@ShantanuPSinha)
 - Ronit Nallagatla (@ronitnallagatla)
+- Shreyas Chinnola (@ShreChinno)
