@@ -147,6 +147,3 @@ under the Developer Certificate of Origin <https://developercertificate.org/>.
 - Taichi Ishitani (@taichi-ishitani)
 - Sosuke Hosokawa (@so298)
 - Jan Remes (@remes-codasip)
-- Shantanu Sinha (@ShantanuPSinha)
-- Ronit Nallagatla (@ronitnallagatla)
-- Shreyas Chinnola (@ShreChinno)
